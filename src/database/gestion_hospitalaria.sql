@@ -115,28 +115,6 @@ CREATE TABLE IF NOT EXISTS `equipos` (
   CONSTRAINT `equipos_ibfk_2` FOREIGN KEY (`Id_Ubicacion`) REFERENCES `almacenes_ubicaciones` (`Id_Ubicacion`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE IF NOT EXISTS `examenes_laboratorio` (
-  `examen_id` int NOT NULL AUTO_INCREMENT,
-  `paciente_id` int NOT NULL,
-  `fecha` datetime DEFAULT NULL,
-  `tipo_examen` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `estado` varchar(50) COLLATE utf8mb4_general_ci DEFAULT 'Pendiente',
-  `resultados` text COLLATE utf8mb4_general_ci,
-  `observaciones` text COLLATE utf8mb4_general_ci,
-  PRIMARY KEY (`examen_id`),
-  KEY `fk_paciente_id` (`paciente_id`),
-  CONSTRAINT `fk_paciente_id` FOREIGN KEY (`paciente_id`) REFERENCES `pacientes` (`paciente_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS `pruebas_laboratorio` (
-  `prueba_id` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `categoria` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `fecha` datetime DEFAULT NULL,
-  `descripcion` text COLLATE utf8mb4_general_ci,
-  PRIMARY KEY (`prueba_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 CREATE TABLE IF NOT EXISTS `examenes_hospitalizacion` (
   `hospitalizacion_id` int DEFAULT NULL,
   `nombre` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -157,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `habitaciones` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `historial_medico` (
-  `id` bigint(20) NOT NULL,
+  `id` int(20) NOT NULL,
   `consulta_id` int NOT NULL,
   `id_paciente` bigint(20) NOT NULL,
   `fecha_registro` datetime NOT NULL DEFAULT current_timestamp(),
@@ -204,34 +182,73 @@ CREATE TABLE IF NOT EXISTS `hospitalizaciones` (
   PRIMARY KEY (`hospitalizacion_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE IF NOT EXISTS `ingresos` (
-    `id_ingreso` INT PRIMARY KEY AUTO_INCREMENT,
-    `fecha_ingreso` DATE NOT NULL,
-    `tipo_ingreso` VARCHAR(50) NOT NULL,
-    `monto` DECIMAL(15, 2),
-    `descripcion` TEXT,
-    `fuente` VARCHAR(100)
-);
+DROP TABLE IF EXISTS `ingresos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ingresos` (
+  `ingresos_id` int NOT NULL AUTO_INCREMENT,
+  `cantidad` int DEFAULT NULL,
+  `concepto` text,
+  `tipo_ingreso` text,
+  `contribuyente` text,
+  `fecha` date NOT NULL,
+  `moneda` varchar(255) NOT NULL,
+  `tipo_contribuyente` varchar(255) NOT NULL,
+  `identificacion_contribuyente` varchar(255) NOT NULL,
+  PRIMARY KEY (`ingresos_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-CREATE TABLE IF NOT EXISTS `egresos` (
-    `id_egreso` INT PRIMARY KEY AUTO_INCREMENT,
-    `fecha_egreso` DATE NOT NULL,
-    `tipo_egreso` VARCHAR(50) NOT NULL,
-    `monto` DECIMAL(15, 2) NOT NULL,
-    `descripcion` TEXT,
-    `id_orden_compra` INT,
-    `id_nomina` INT,
-    FOREIGN KEY (`id_orden_compra`) REFERENCES `ordenescompra`(`id_orden_compra`),
-    FOREIGN KEY (`id_nomina`) REFERENCES `nominas`(`id_nomina`)
-);
+LOCK TABLES `ingresos` WRITE;
+/*!40000 ALTER TABLE `ingresos` DISABLE KEYS */;
+INSERT INTO `ingresos` VALUES (2,10000,'Presupuesto','Estado','Gobernación de Carabobo','2025-04-19','$','Empresa','J - 123456789');
+/*!40000 ALTER TABLE `ingresos` ENABLE KEYS */;
+UNLOCK TABLES;
 
-CREATE TABLE IF NOT EXISTS `ordenescompra` (
-    `id_orden_compra` INT PRIMARY KEY AUTO_INCREMENT,
-    `fecha_orden` DATE NOT NULL,
-    `proveedor` VARCHAR(100) NOT NULL,
-    `monto_total` DECIMAL(15, 2) NOT NULL,
-    `estado` VARCHAR(50) NOT NULL
-);
+CREATE TABLE `ordenes_compra` (
+  `orden_compra_id` int NOT NULL AUTO_INCREMENT,
+  `tipo_orden` varchar(255) DEFAULT NULL,
+  `proveedor_id` int DEFAULT NULL,
+  `fecha_orden` date DEFAULT NULL,
+  `fecha_esperada` date DEFAULT NULL,
+  `fecha_entrega` date DEFAULT NULL,
+  `estado` varchar(255) DEFAULT NULL,
+  `monto_total` double DEFAULT NULL,
+  `moneda` varchar(255) DEFAULT NULL,
+  `observaciones` text,
+  `numero_orden` int DEFAULT NULL,
+  `fecha_modificacion` date DEFAULT NULL,
+  `recurso_id_1` int DEFAULT NULL,
+  `precio_unitario_1` double DEFAULT NULL,
+  `cantidad_1` double DEFAULT NULL,
+  `unidad_medida_1` varchar(255) DEFAULT NULL,
+  `recurso_id_2` int DEFAULT NULL,
+  `precio_unitario_2` double DEFAULT NULL,
+  `cantidad_2` double DEFAULT NULL,
+  `unidad_medida_2` varchar(255) DEFAULT NULL,
+  `recurso_id_3` int DEFAULT NULL,
+  `precio_unitario_3` double DEFAULT NULL,
+  `cantidad_3` double DEFAULT NULL,
+  `unidad_medida_3` varchar(255) DEFAULT NULL,
+  `recurso_id_4` int DEFAULT NULL,
+  `precio_unitario_4` double DEFAULT NULL,
+  `cantidad_4` double DEFAULT NULL,
+  `unidad_medida_4` varchar(255) DEFAULT NULL,
+  `recurso_id_5` int DEFAULT NULL,
+  `precio_unitario_5` double DEFAULT NULL,
+  `cantidad_5` double DEFAULT NULL,
+  `unidad_medida_5` varchar(255) DEFAULT NULL,
+  `forma_pago` varchar(255) NOT NULL,
+  `fecha_pago` date DEFAULT NULL,
+  `tipo_recurso1` text,
+  `tipo_recurso2` text,
+  `tipo_recurso3` text,
+  `tipo_recurso4` text,
+  `tipo_recurso5` text,
+  PRIMARY KEY (`orden_compra_id`),
+  KEY `ordenes_compra_ibfk_6` (`proveedor_id`),
+  CONSTRAINT `ordenes_compra_ibfk_6` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`proveedor_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS nominas (
   `id_nomina` int NOT NULL AUTO_INCREMENT,
@@ -352,21 +369,6 @@ CREATE TABLE IF NOT EXISTS `pacientes` (
   UNIQUE KEY `cedula` (`cedula`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `telefono` (`telefono`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS `pagos_empleados` (
-  `pago_id` int NOT NULL AUTO_INCREMENT,
-  `fecha_pago` date DEFAULT NULL,
-  `empleado_id` int DEFAULT NULL,
-  `concepto` text COLLATE utf8mb4_general_ci,
-  `monto` float NOT NULL,
-  `moneda` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '$',
-  PRIMARY KEY (`pago_id`),
-  UNIQUE KEY `pago_id` (`pago_id`),
-  UNIQUE KEY `pago_id_2` (`pago_id`),
-  UNIQUE KEY `pago_id_3` (`pago_id`),
-  KEY `pagos_empleados_ibfk_1` (`empleado_id`),
-  CONSTRAINT `pagos_empleados_ibfk_1` FOREIGN KEY (`empleado_id`) REFERENCES `empleados` (`empleado_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `productos` (
@@ -578,6 +580,27 @@ CREATE TABLE IF NOT EXISTS `tipos_citas` (
   UNIQUE KEY `tipo_cita_id_3` (`tipo_cita_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `pagos_empleados` (
+  `pago_id` int NOT NULL AUTO_INCREMENT,
+  `fecha_pago` date DEFAULT NULL,
+  `empleado_id` int DEFAULT NULL,
+  `concepto` text,
+  `monto` float NOT NULL,
+  `moneda` varchar(255) DEFAULT '$',
+  PRIMARY KEY (`pago_id`),
+  UNIQUE KEY `pago_id` (`pago_id`),
+  UNIQUE KEY `pago_id_2` (`pago_id`),
+  UNIQUE KEY `pago_id_3` (`pago_id`),
+  KEY `pagos_empleados_ibfk_1` (`empleado_id`),
+  CONSTRAINT `pagos_empleados_ibfk_1` FOREIGN KEY (`empleado_id`) REFERENCES `empleados` (`empleado_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+LOCK TABLES `pagos_empleados` WRITE;
+/*!40000 ALTER TABLE `pagos_empleados` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pagos_empleados` ENABLE KEYS */;
+UNLOCK TABLES;
+
 CREATE TABLE IF NOT EXISTS `usuarios` (
   `usuario_id` int NOT NULL AUTO_INCREMENT,
   `usuario` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -602,7 +625,6 @@ CREATE TABLE IF NOT EXISTS citas_consultas_odontologicas (
   FOREIGN KEY (consulta_id)  REFERENCES consultas_odontologicas (consulta_id),
   FOREIGN KEY (cita_id) REFERENCES citas  (cita_id)
 );
-
 CREATE TABLE IF NOT EXISTS examenes_laboratorio (
   examen_id int NOT NULL AUTO_INCREMENT,
   paciente_id int NOT NULL,
@@ -624,7 +646,6 @@ CREATE TABLE IF NOT EXISTS pruebas_laboratorio (
   descripcion text COLLATE utf8mb4_general_ci,
   PRIMARY KEY (prueba_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 CREATE TABLE IF NOT EXISTS consumos_consultas_medicas (
   consulta_id   INT        NOT NULL,
   Id_Producto   INT        NOT NULL,

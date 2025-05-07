@@ -1,7 +1,8 @@
 import { createPool } from "mysql2/promise";
 import { DB_DATABASE, DB_HOST, DB_PASSWORD, DB_PORT, DB_USER, } from "./config.js";
 
-// Crear el pool de conexiones
+// Pool.
+
 export const pool = createPool({
   host: DB_HOST,
   user: DB_USER,
@@ -10,12 +11,13 @@ export const pool = createPool({
   database: DB_DATABASE,
 });
 
-// Probar la conexión y manejar errores
+// Probar la conexión y manejar errores.
+
 pool
   .getConnection()
   .then((connection) => {
     console.log("Conexión exitosa a la base de datos");
-    connection.release(); // Liberar la conexión al pool
+    connection.release(); // Liberar la conexión al pool.
   })
   .catch((err) => {
     console.error("Error al conectarse a la base de datos:");
@@ -45,7 +47,8 @@ pool
     }
   });
 
-// Escuchar eventos de error del pool
+// Escuchar eventos de error del pool.
+
 pool.on("error", (err) => {
   console.error("Error en el pool de conexiones:");
   if (err.code === "PROTOCOL_CONNECTION_LOSTs") {
